@@ -31,7 +31,7 @@ jobs:
       id: build
       run: |
         gradle
-        echo "ARTIFACT=$(ls dist/*.zip)" >> "$GITHUB_ENV"
+        echo "ARTIFACT=$(ls dist/*.zip)" >> "$GITHUB_OUTPUT"
     - uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.build.outputs.ARTIFACT }}
