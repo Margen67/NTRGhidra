@@ -32,9 +32,10 @@ jobs:
       run: |
         gradle
         echo "ARTIFACT=$(ls dist/*.zip)" >> "$GITHUB_OUTPUT"
+        echo "ARTIFACT_NAME=$(basename dist/*.zip)" >> "$GITHUB_OUTPUT"
     - uses: actions/upload-artifact@v4
       with:
-        name: ${{ steps.build.outputs.ARTIFACT }}
+        name: ${{ steps.build.outputs.ARTIFACT_NAME }}
         path: ${{ steps.build.outputs.ARTIFACT }}
         if-no-files-found: error
     - name: Release
