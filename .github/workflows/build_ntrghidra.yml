@@ -21,20 +21,25 @@ jobs:
       with:
         java-version: 21
         distribution: temurin # Eclipse JDK
-        #settings-path: ${{ github.workspace }}
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
-      #with:
-      #  gradle-version: ${{ env.GRADLE_VERSION }}
     - name: Setup Ghidra
       uses: antoniovazquezblanco/setup-ghidra@master
       with:
         version: ${{ matrix.GHIDRA_VERSION }}
     - name: Build
-      run: gradle
+      id: build
+      run: |
+        gradle
+        echo "ARTIFACT=$(ls dist/*.zip)" >> "$GITHUB_ENV"
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.build.outputs.ARTIFACT }}
+        path: ${{ steps.build.outputs.ARTIFACT }}
+        if-no-files-found: error
     - name: Release
       if: github.event_name == 'release'
       uses: shogo82148/actions-upload-release-asset@v1
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: "dist/ghidra_*_NTRGhidra.zip"
+        asset_path: ${{ steps.build.outputs.ARTIFACT }}
